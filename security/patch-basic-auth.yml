@@ -17,5 +17,5 @@ spec:
         spring:
           security:
             user:
-              name: username2replace                                        # The basic auth username you want to use.
+              name: admin                                        # The basic auth username you want to use.
               password: encrypted:k8s!n:spin-secrets!k:http-password        # The basic auth password you want to use.
