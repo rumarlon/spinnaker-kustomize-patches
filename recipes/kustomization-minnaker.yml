@@ -26,6 +26,7 @@ resources:
   - infrastructure/minio.yml                # Self hosted minio, a S3 compatible data store
   - accounts/kubernetes/spin-sa.yml         # Kubernetes service account needed by patch-kube.yml
   - expose/ingress-traefik.yml              # Use Traefik for Ingress
+  - infrastructure/opa.yml                  # deploy opa
 
 patchesStrategicMerge:
   - persistence/patch-minio.yml             # (Mandatory). Persistence to store spinnaker applications and pipelines
@@ -35,4 +36,6 @@ patchesStrategicMerge:
   - security/patch-gate-tomcat-headers.yml  # Add headers to Tomcat for Gate
   - accounts/kubernetes/patch-kube.yml      # Kubernetes accounts
   - accounts/docker/patch-dockerhub.yml     # Docker accounts
+  - armory/patch-policyengine.yml           # policy-engine
+
  # - accounts/http/patch-http.yml            # HTTP accounts
