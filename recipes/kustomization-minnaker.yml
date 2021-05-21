@@ -30,8 +30,9 @@ resources:
 patchesStrategicMerge:
   - persistence/patch-minio.yml             # (Mandatory). Persistence to store spinnaker applications and pipelines
   - expose/patch-ingress.yml                # Automatically expose spinnaker
+  - core_config/patch-deck.yml              # enable auth
   - security/patch-basic-auth.yml           # Enable Basic Auth
   - security/patch-gate-tomcat-headers.yml  # Add headers to Tomcat for Gate
   - accounts/kubernetes/patch-kube.yml      # Kubernetes accounts
   - accounts/docker/patch-dockerhub.yml     # Docker accounts
-  - accounts/http/patch-http.yml            # HTTP accounts
+ # - accounts/http/patch-http.yml            # HTTP accounts
