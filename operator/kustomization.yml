@@ -20,6 +20,6 @@ generatorOptions:
   disableNameSuffixHash: true
 images:
   - name: armory/armory-operator
-    newName: mydocker.io/armory/armory-operator
+    newName: docker.io/armory/armory-operator
   - name: armory/halyard-armory
-    newName: mydocker.io/armory/halyard-armory
+    newName: docker.io/armory/halyard-armory
