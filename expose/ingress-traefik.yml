@@ -14,7 +14,7 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-entry-point: http
 spec:
   rules:
-  - host: a21c5437ec83c4d2c94bd92802189d2f-3216182.us-west-2.elb.amazonaws.com           # Public facing spinnaker domain
+  - host: ae59ef8298da94edf83e9e3da58194d9-355309843.us-west-2.elb.amazonaws.com           # Public facing spinnaker domain
     http:
       paths:
       - backend:
