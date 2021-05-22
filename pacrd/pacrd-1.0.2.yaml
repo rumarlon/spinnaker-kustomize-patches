@@ -1,0 +1,553 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: applications.pacrd.armory.spinnaker.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.phase
+    description: Status
+    name: status
+    type: string
+  - JSONPath: .status.lastConfigured
+    description: Last Configured
+    name: lastConfigured
+    type: date
+  - JSONPath: .status.url
+    name: URL
+    type: string
+  group: pacrd.armory.spinnaker.io
+  names:
+    kind: Application
+    listKind: ApplicationList
+    plural: applications
+    shortNames:
+    - app
+    singular: application
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Application is the Schema for the applications API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: ApplicationSpec defines the desired state of Application
+          properties:
+            dataSources:
+              description: DataSources optionally enable and disable elements of the Spinnaker Application UI.
+              properties:
+                disabled:
+                  description: Disabled is the list of explicitly disabled UI elements.
+                  items:
+                    description: 'DataSource is a tab in the Spinnaker UI representing a kind of managed resource. Allowed values include: serverGroups,executions,loadBalancers,securityGroups.'
+                    enum:
+                    - serverGroups
+                    - executions
+                    - loadBalancers
+                    - securityGroups
+                    type: string
+                  type: array
+                enabled:
+                  description: Enabled is the list of explicitly enabled UI elements.
+                  items:
+                    description: 'DataSource is a tab in the Spinnaker UI representing a kind of managed resource. Allowed values include: serverGroups,executions,loadBalancers,securityGroups.'
+                    enum:
+                    - serverGroups
+                    - executions
+                    - loadBalancers
+                    - securityGroups
+                    type: string
+                  type: array
+              type: object
+            description:
+              description: Description explains the purpose of this application.
+              type: string
+            email:
+              description: Email points to the e-mail user or list that owns this application.
+              type: string
+            permissions:
+              description: Permissions maps actions inside Spinnaker to authenticated roles that can take them.
+              properties:
+                EXECUTE:
+                  description: Execute grants the defined roles the ability to execute an application's pipelines.
+                  items:
+                    type: string
+                  type: array
+                READ:
+                  description: Read grants the defined roles the ability to read an application and its pipelines.
+                  items:
+                    type: string
+                  type: array
+                WRITE:
+                  description: Write grants the defined roles the ability to modify an application and its pipelines.
+                  items:
+                    type: string
+                  type: array
+              type: object
+          type: object
+        status:
+          description: ApplicationStatus defines the observed state of Application
+          properties:
+            lastConfigured:
+              description: LastConfigured represents the last time the operator updated this application in Spinnaker.
+              format: date-time
+              type: string
+            phase:
+              description: Phase represents the current status of this application.
+              enum:
+              - ErrorNotFound
+              - Creating
+              - ErrorFailedToCreate
+              - Created
+              - Deleting
+              - ErrorDeletingApplication
+              - Updated
+              - ErrorUpdatingApplication
+              type: string
+            url:
+              description: Url represents the URL of the configured Spinnaker cluster.
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: pipelines.pacrd.armory.spinnaker.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.phase
+    description: Status
+    name: status
+    type: string
+  - JSONPath: .status.lastConfigured
+    description: Last Configured
+    name: lastConfigured
+    type: date
+  - JSONPath: .status.url
+    name: URL
+    type: string
+  group: pacrd.armory.spinnaker.io
+  names:
+    kind: Pipeline
+    listKind: PipelineList
+    plural: pipelines
+    shortNames:
+    - pipe
+    singular: pipeline
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Pipeline is the Schema for the pipelines API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: PipelineSpec defines the desired state of Pipeline
+          properties:
+            allowParallelExecutions:
+              description: AllowParallelExecutions TODO
+              type: boolean
+            application:
+              description: Application is a reference to the application that owns this pipeline.
+              type: string
+            description:
+              description: Description tells the user what this pipeline is for.
+              type: string
+            executionEngine:
+              description: ExecutionEngine TODO
+              type: string
+            expectedArtifacts:
+              items:
+                description: Artifact is an object that references an external resource. It could be a Docker container, file in source control, AMI, or binary blob in S3, etc.
+                properties:
+                  defaultArtifact:
+                    description: If your artifact either wasn't supplied from a trigger, or it wasn't found in a prior execution, the artifact specified here will end up in your pipeline's execution context.
+                    properties:
+                      properties:
+                        type: object
+                      type:
+                        type: string
+                    required:
+                    - type
+                    type: object
+                  displayName:
+                    description: DisplayName tells Spinnaker how to render this artifact in the UI.
+                    type: string
+                  id:
+                    description: ID is a unique identifier for this artifact. IDs must only be unique for the pipeline they are declared in.
+                    type: string
+                  matchArtifact:
+                    description: "This specifies which fields in your incoming artifact to match against. Every field that you supply will be used to match against all incoming artifacts. If all specified fields match, the incoming artifact is bound to your pipeline context. \n See the [reference](https://www.spinnaker.io/reference/artifacts/in-pipelines/#expected-artifacts) for more information."
+                    properties:
+                      properties:
+                        type: object
+                      type:
+                        type: string
+                    required:
+                    - type
+                    type: object
+                  useDefaultArtifact:
+                    description: If true, requires DefaultArtifact to be defined with a fallback artifact to use.
+                    type: boolean
+                  usePriorArtifact:
+                    description: "Attempt to match against an artifact in the prior pipeline execution's context. \n See the [reference](https://www.spinnaker.io/reference/artifacts/in-pipelines) for more information."
+                    type: boolean
+                required:
+                - displayName
+                - id
+                type: object
+              type: array
+            keepWaitingPipelines:
+              description: KeepWaitingPipelines TODO
+              type: boolean
+            limitConccurent:
+              description: LimitConcurrent TODO
+              type: boolean
+            parameterConfig:
+              items:
+                properties:
+                  default:
+                    type: string
+                  description:
+                    type: string
+                  hasOptions:
+                    type: boolean
+                  label:
+                    type: string
+                  name:
+                    type: string
+                  options:
+                    items:
+                      properties:
+                        value:
+                          type: string
+                      required:
+                      - value
+                      type: object
+                    type: array
+                  pinned:
+                    type: boolean
+                  required:
+                    type: boolean
+                required:
+                - name
+                type: object
+              type: array
+            stages:
+              description: Stages TODO
+              items:
+                properties:
+                  properties:
+                    type: object
+                  type:
+                    type: string
+                type: object
+              type: array
+            triggers:
+              description: Triggers represent the ways in which
+              items:
+                properties:
+                  properties:
+                    type: object
+                  type:
+                    type: string
+                required:
+                - type
+                type: object
+              type: array
+          required:
+          - stages
+          type: object
+        status:
+          description: PipelineStatus defines the observed state of Pipeline
+          properties:
+            id:
+              description: ID represents the Spinnaker generated id for this pipeline
+              type: string
+            lastConfigured:
+              description: LastConfigured represents the last time the operator updated this pipeline in Spinnaker.
+              format: date-time
+              type: string
+            phase:
+              description: Phase is the current phase of pipeline reconciliation.
+              enum:
+              - ErrorNotFound
+              - Creating
+              - ErrorFailedToCreate
+              - Created
+              - Deleting
+              - ErrorDeletingPipeline
+              - Updated
+              - ErrorUpdatingPipeline
+              - PipelineValidationFailed
+              type: string
+            url:
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pacrd-leader-election-role
+  namespace: spinnaker
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: pacrd-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - patch
+- apiGroups:
+  - pacrd.armory.spinnaker.io
+  resources:
+  - applications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pacrd.armory.spinnaker.io
+  resources:
+  - applications/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - pacrd.armory.spinnaker.io
+  resources:
+  - pipelines
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pacrd.armory.spinnaker.io
+  resources:
+  - pipelines/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pacrd-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pacrd-leader-election-rolebinding
+  namespace: spinnaker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pacrd-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: spinnaker
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pacrd-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pacrd-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: spinnaker
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pacrd-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pacrd-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: spinnaker
+---
+apiVersion: v1
+data:
+  pacrd.yaml: |
+    spinnakerServices:
+      front50: http://spin-front50.spinnaker:8080
+      orca: http://spin-orca.spinnaker:8083
+kind: ConfigMap
+metadata:
+  name: pacrd-config
+  namespace: spinnaker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: pacrd-controller-manager-metrics-service
+  namespace: spinnaker
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: pacrd-controller-manager
+  namespace: spinnaker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.4.1
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+      - args:
+        - --metrics-addr=127.0.0.1:8080
+        - --enable-leader-election
+        command:
+        - /manager
+        image: armory/pacrd:1.0.2
+        name: manager
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: /opt/pacrd
+          name: config
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - configMap:
+          name: pacrd-config
+        name: config

@@ -1,0 +1,7 @@
+# file: kustomization.yaml
+resources:
+  - ./pacrd-1.0.1.yaml
+patchesStrategicMerge:
+  - ./patch.yaml
+namespace: spinnaker  # Note: you should change this value if you are _not_ deploying into the `spinnaker` namespace.
+
