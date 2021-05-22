@@ -36,6 +36,8 @@ patchesStrategicMerge:
   - security/patch-gate-tomcat-headers.yml  # Add headers to Tomcat for Gate
   - accounts/kubernetes/patch-kube.yml      # Kubernetes accounts
   - accounts/docker/patch-dockerhub.yml     # Docker accounts
-  - armory/patch-policyengine.yml           # policy-engine
 
+  # armory patches
+  - armory/patch-policyengine.yml           # policy-engine
+  - armory/patch-terraformer.yml            # terraformer
  # - accounts/http/patch-http.yml            # HTTP accounts
