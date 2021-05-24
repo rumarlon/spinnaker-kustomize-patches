@@ -19,3 +19,5 @@ spec:
             user:
               name: admin                                        # The basic auth username you want to use.
               password: encrypted:k8s!n:spin-secrets!k:http-password        # The basic auth password you want to use.
+              name: marlon                                        # The basic auth username you want to use.
+              password: encrypted:k8s!n:spin-secrets!k:http-password-2        # The basic auth password you want to use.
